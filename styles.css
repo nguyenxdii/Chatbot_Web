@@ -107,10 +107,17 @@ body {
   gap: 1rem;
 }
 
-.message {
+.message { 
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+
+.message.bot.typing .bubble {
+  color: var(--muted);
+  font-style: italic;
+  border-style: dashed;
+  opacity: 0.85;
 }
 
 .message.user .bubble {
