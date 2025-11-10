@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot Tư Vấn Bán Hàng</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page">
+        <aside class="sidebar">
+            <h1>Shop Vui Vẻ</h1>
+            <p>Chatbot hỗ trợ tư vấn sản phẩm và chăm sóc khách hàng 24/7.</p>
+            <div class="highlights">
+                <div>
+                    <h2>500+</h2>
+                    <span>Sản phẩm nổi bật</span>
+                </div>
+                <div>
+                    <h2>4.8/5</h2>
+                    <span>Đánh giá hài lòng</span>
+                </div>
+            </div>
+            <footer>
+                <p><strong>Hướng dẫn:</strong> hỏi về sản phẩm, khuyến mãi, tình trạng đơn hàng hoặc hỗ trợ khác.</p>
+            </footer>
+        </aside>
+        <main class="chat">
+            <header>
+                <div class="avatar">🤖</div>
+                <div>
+                    <h2>Trợ lý bán hàng</h2>
+                    <p>Sẵn sàng trả lời câu hỏi của bạn</p>
+                </div>
+            </header>
+            <section id="chat-history" class="chat-history" aria-live="polite"></section>
+            <form id="chat-form" class="chat-input" autocomplete="off">
+                <label class="sr-only" for="message">Tin nhắn</label>
+                <input id="message" name="message" type="text" placeholder="Nhập câu hỏi của bạn..." required />
+                <button type="submit">Gửi</button>
+            </form>
+        </main>
+    </div>
+    <template id="message-template">
+        <article class="message">
+            <div class="bubble"></div>
+            <time class="timestamp"></time>
+        </article>
+    </template>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
