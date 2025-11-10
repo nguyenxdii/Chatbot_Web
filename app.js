@@ -1,26 +1,24 @@
+import { GoogleGenAI } from 'https://esm.run/@google/genai';
+
 const chatHistory = document.querySelector('#chat-history');
 const chatForm = document.querySelector('#chat-form');
 const messageInput = document.querySelector('#message');
 const template = document.querySelector('#message-template');
 
 const API_KEY = 'AIzaSyB_NRd6NjEmLd8FIMOvCQNVO2-oDHayDT0';
-const MODEL = 'gemini-pro';
-const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+const MODEL = 'gemini-2.5-flash';
 const TYPING_DELAY = 400;
 
-const systemPrompt = [
+const systemInstruction = [
   'Bạn là trợ lý bán hàng thân thiện của Shop Vui Vẻ.',
   'Luôn trả lời bằng tiếng Việt có dấu, ngắn gọn nhưng đầy đủ thông tin.',
   'Khi không chắc chắn, hãy đề xuất chuyển cuộc trò chuyện cho nhân viên thực.',
   'Gợi ý sản phẩm, chương trình khuyến mãi và chính sách theo cách tự nhiên.'
 ].join(' ');
 
-const conversation = [
-  {
-    role: 'user',
-    parts: [{ text: systemPrompt }]
-  }
-];
+const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+const conversation = [];
 
 function createMessageElement(text, author = 'bot') {
   const messageNode = template.content.firstElementChild.cloneNode(true);
@@ -76,25 +74,24 @@ chatForm.addEventListener('submit', handleUserMessage);
 appendMessage('Xin chào! Mình có thể giúp gì cho bạn hôm nay?', 'bot');
 
 async function fetchGeminiReply() {
-  const response = await fetch(API_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+  const response = await ai.models.generateContent({
+    model: MODEL,
+    systemInstruction: {
+      role: 'system',
+      parts: [{ text: systemInstruction }]
     },
-    body: JSON.stringify({
-      contents: conversation
-    })
+    contents: conversation
   });
 
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-
-  const data = await response.json();
-  const parts = data?.candidates?.[0]?.content?.parts;
-  const text = Array.isArray(parts)
-    ? parts.map((part) => part.text ?? '').join('').trim()
+  const rawText = typeof response?.text === 'function'
+    ? response.text()
+    : response?.text;
+  const fallbackText = Array.isArray(response?.candidates?.[0]?.content?.parts)
+    ? response.candidates[0].content.parts
+        .map((part) => part.text ?? '')
+        .join('')
     : '';
+  const text = (rawText ?? fallbackText ?? '').trim();
 
   if (!text) {
     throw new Error('Empty response from Gemini');
